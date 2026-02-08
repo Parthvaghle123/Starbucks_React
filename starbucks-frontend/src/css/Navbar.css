@@ -1,0 +1,281 @@
+/* Base Styling */
+.navbar {
+  font-weight: bold;
+  background-color: whitesmoke;
+}
+
+.navbar h3 {
+  font-weight: bold;
+  color:rgb(20, 101, 20);
+  margin-top: 10px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+input[type="search"] {
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  padding: 6px;
+  width: 200px;
+}
+
+.btn1 {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.btn1:hover {
+  background-color: white;
+  color: green;
+}
+
+.btn2 {
+  padding: 8px 12px;
+  font-weight: bold;
+  font-size: 16px;
+  transition: transform 0.3s ease, background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+}
+
+.btn2:hover {
+  background-color: white;
+  color: green;
+  transform: scale(1.05);
+}
+
+/* Icon-only buttons styling */
+.btn2[title="Wishlist"],
+.btn2[title="My Cart"] {
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn2[title="Wishlist"]:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn2[title="My Cart"]:hover {
+  background-color: #198754;
+  color: white;
+}
+
+.custom-dropdown {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  text-align: center;
+  min-width: 180px;
+  animation: fadeInDown 0.3s ease-in-out;
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.dropdown-menu {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  display: block !important;
+  visibility: hidden;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.search-form {
+  flex-grow: 1;
+  max-width: 250px;
+}
+
+.head1 {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.carousel-item img {
+  object-fit: cover;
+  height: 350px;
+  border-radius: 20px;
+}
+@media (max-width: 820px) {
+  .search {
+    max-width: 50%;
+    margin-left: 10px;
+  }
+  .btn1 {
+    max-width: 100%;
+  }
+  .btn2 {
+    max-width: 15%;
+    margin-top: 10px;
+  }
+   .navbar-toggler{
+    width: 10%;
+  }
+}
+@media (max-width: 982px) {
+  .search {
+    max-width: 50%;
+    margin-left: 10px;
+  }
+  .btn1 {
+    max-width: 100%;
+  }
+  .btn2 {
+    max-width: 20%;
+    margin-top: 10px;
+  }
+   .navbar-toggler{
+    width: 10%;
+  }
+    .nav-link{
+  padding: 0.5em 1rem !important;
+  }
+}
+@media (max-width: 716px) {
+  .search {
+    max-width: 50%;
+    margin-left: 10px;
+  }
+  .btn1 {
+    max-width: 20%;
+  }
+  .btn2 {
+    max-width: 20%;
+    margin-top: 10px;
+  }
+   .navbar-toggler{
+    width: 10%;
+  }
+    .nav-link{
+  padding: 0.5em 1rem !important;
+  }
+}
+@media (max-width: 475px) {
+  .search {
+    max-width: 80%;
+    margin-left: 10px;
+  }
+
+  .btn1 {
+    max-width: 15%;
+  }
+
+  .btn2 {
+    max-width: 33%;
+    margin-top: 10px;
+    margin-left: 5px;
+  }
+
+  .custom-dropdown {
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+  .navbar-toggler{
+    width: 20%;
+  }
+}
+
+@media (max-width: 350px) {
+  .search {
+    max-width: 80%;
+    margin-left: 10px;
+  }
+
+  .btn1 {
+    max-width: 15%;
+  }
+
+  .btn2 {
+    max-width: 39%;
+    margin-top: 10px;
+    margin-left: 5px;
+  }
+
+  .custom-dropdown {
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+
+}
+
+@media (max-width: 1024px) {
+  .nav-links {
+    gap: 20px !important;
+  }
+   .search {
+    max-width: 70%;
+    margin-left: 10px;
+  }
+}
+@media (max-width: 1200px) {
+  .nav-links {
+    gap:20px !important;
+  }
+}
+@media (max-width: 1088px) {
+  .nav-links {
+    gap: 25px !important;
+  }
+}
+@media (max-width: 1154px) {
+  .nav-links {
+    gap: 25px !important;
+  }
+}
+@media (min-width: 2560px) {
+  .nav-links {
+    gap: 85px !important;
+    margin-left: 20px !important;
+  }
+}
+@media (min-width: 1440px) {
+  .nav-links {
+    gap: 100px !important;
+    margin-left: 30px !important;
+  }
+}
+.head1{
+  font-weight: bold;
+}
+.nav-link{
+  font-weight: bold;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease-in-out;
+}
+.nav-link:hover{
+  background-color: #007f3f; /* Green box */
+  color: #fff !important;   /* White text */
+  border-radius: 0.375rem;
+}
+.nav-link.active{
+  background-color: #007f3f; /* Green background for active */
+  color: #fff !important;
+  font-weight: bold;
+  border-radius: 0.375rem;
+}

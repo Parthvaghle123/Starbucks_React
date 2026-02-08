@@ -1,0 +1,8 @@
+- [x] Fix frontend Login.jsx: Change Google sign-in URL from "/auth/google/callback" to "/auth/google"
+- [x] Update backend index.js: Modify Google OAuth callback to generate JWT token and redirect with token in URL query
+- [x] Update frontend Home.jsx: Handle token from URL query parameters and set in localStorage
+- [x] Update App.jsx: Pass setUsername prop to Home component
+- [x] Create Profile.jsx component with form for editing user details
+- [x] Add /profile route to App.jsx
+- [x] Add GET and PUT /profile API endpoints in backend
+- [x] Add Profile link to Navbar dropdown menu

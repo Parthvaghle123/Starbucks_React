@@ -1,0 +1,177 @@
+.body {
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", sans-serif;
+  overflow-x: hidden;
+}
+.signup-container {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  animation: fadeIn 1s ease-in-out;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  animation: slideIn 0.8s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.btn-primary {
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #0d6efd;
+  transform: scale(1.05);
+}
+
+.btn-outline-secondary:hover {
+  animation: pulse 0.5s;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+.strength {
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.gender-option input[type="radio"] {
+  display: none;
+}
+
+.gender-option .box {
+  width: 100px;
+  height: 100px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.gender-option .circle {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #555;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.gender-option input[type="radio"]:checked + .box {
+  border-color: #007bff;
+  background-color: #d0e9ff;
+}
+
+.label-text {
+  font-size: 14px;
+}
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="textarea"] {
+  border: 1px solid #ccc; /* Blue border */
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+}
+.form-control {
+  border: 1px solid #ccc;        /* Gray border */
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;              /* Allows vertical resize only */
+  font-size: 1rem;
+}
+
+.head{
+  font-size: 25px;
+}
+
+.toast-popup {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #28a745; /* green for success */
+  color: white;
+  padding: 20px 35px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 10px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -20px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  90% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+.l2{
+  max-width: 80px !important;
+}

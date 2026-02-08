@@ -1,0 +1,119 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Order Title માટે એનિમેશન અને Gradient */
+.order-heading {
+  font-size: 2rem;
+  font-weight: bold;
+  background: linear-gradient(90deg, #198754, #28a745);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeIn 1s ease-in-out;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card માટે hover effect */
+.card {
+  border-radius: 12px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Row Hover માટે */
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Select dropdown Responsive */
+.select-hover-effect {
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  width: 100%;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.select-hover-effect:focus,
+.select-hover-effect:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
+}
+
+/* Responsive Widths */
+@media (min-width: 576px) {
+  .select-hover-effect { width: 50%; margin-top: 10px; }
+}
+@media (min-width: 768px) {
+  .select-hover-effect { width: 35%; }
+}
+@media (min-width: 992px) {
+  .select-hover-effect { width: 15%; float: right; }
+}
+
+/* Toast Enhancements */
+.toast-popup {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #dc3545;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  z-index: 1050;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* PDF Download Button Hover */
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+  transform: scale(1.05);
+}
+.b1{
+  max-width: 35%;
+}
+.b1:hover{
+  background-color: white;
+  color: red;
+  border: 2px solid red;
+}
+.bill-style {
+  width: 700px;
+  font-family: 'Georgia', serif;
+  color: #5a3e36;
+  border: 2px solid #a0522d;
+  border-radius: 10px;
+  background: #fff8f0;
+}
+.table th, .table td {
+  vertical-align: middle !important;
+}
+.bt1{
+  width: 35%;
+}
+.form-select:focus {
+  border-color: green !important;
+  box-shadow: 0px 0px 6px rgba(0, 128, 0, 0.5) !important;
+  outline: none !important;
+}
+
+/* ✅ Hover પર green effect */
+.form-select:hover {
+  border-color: green !important;
+  box-shadow: 0px 0px 6px rgba(0, 128, 0, 0.5) !important;
+}

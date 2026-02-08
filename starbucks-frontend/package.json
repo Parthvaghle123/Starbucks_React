@@ -1,0 +1,41 @@
+{
+  "name": "client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "both": "concurrently \"npm run dev\" \"cd ../starbucks-backend && nodemon index.js\" "
+  },
+  "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "axios": "^1.10.0",
+    "bootstrap": "^5.3.7",
+    "concurrently": "^9.2.1",
+    "install": "^0.13.0",
+    "jspdf": "^3.0.1",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.544.0",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.7.0",
+    "react-router-dom": "^7.7.0",
+    "sweetalert2": "^11.22.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "eslint": "^9.30.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "vite": "^7.0.4"
+  }
+}

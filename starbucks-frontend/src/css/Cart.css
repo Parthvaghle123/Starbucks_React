@@ -1,0 +1,235 @@
+body {
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", sans-serif;
+}
+
+th,
+td {
+  vertical-align: middle !important;
+}
+
+.btn:hover {
+  transform: scale(1.03);
+  transition: 0.2s ease-in-out;
+}
+
+.btn-danger,
+.btn-primary {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.table-bordered tbody tr:hover {
+  background-color: #f1f3f5;
+  transition: background-color 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+}
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.head {
+  font-size: 25px;
+}
+/* ...existing CSS above... */
+
+/* Improve Remove and Order Now button responsiveness */
+@media (max-width: 992px) {
+  .btn-order, .btn-remove {
+    width: 100% !important;
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 1024px) {
+  .btn-order, .btn-remove {
+    width: 70% !important;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+   .btn-remove {
+    width: 70% !important;
+    font-size: 0.85rem;
+  }
+}
+
+.btn-remove {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: transform 0.2s;
+}
+
+.btn-remove:hover {
+  background-color: #b02a37;
+  transform: scale(1.05);
+}
+.btn-order{
+  background-color: #007f3f;
+  color: white;
+  width: 70%;
+  font-weight: bold;
+  transition: transform 0.3s ease, background-color 0.3s;
+}
+.btn7{
+  background-color: #007f3f;
+  color: white;
+  border-radius: none;
+}
+
+
+
+.table tbody td:nth-child(2) {
+  /* Title column */
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.table tbody td:nth-child(3) {
+  /* Price column */
+  color: #e74c3c;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.table tbody td:nth-child(4) {
+  /* Quantity column */
+  color: #3498db;
+  font-weight: 600;
+}
+
+.table tbody td:nth-child(5) {
+  /* Total column */
+  color: #27ae60;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Table Column Text Colors and Alignment */
+.table tbody td {
+  text-align: center;
+}
+
+.table tbody td:nth-child(2) {
+  /* Title column */
+  color: #2c3e50;
+  font-weight: 600;
+  text-align: center;
+}
+
+.table tbody td:nth-child(3) {
+  /* Price column */
+  color: #e74c3c;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.table tbody td:nth-child(4) {
+  /* Quantity column */
+  color: #3498db;
+  font-weight: 600;
+  text-align: center;
+}
+
+.table tbody td:nth-child(5) {
+  /* Total column */
+  color: #27ae60;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+/* Table Header Text Color and Alignment */
+.table thead th {
+  color: #fff !important;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  background-color: rgb(186, 186, 186);
+}
+
+/* Total Row Styling */
+.table tbody tr:last-child td:nth-child(5) {
+  color: #27ae60;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.table tbody tr:last-child td:nth-child(4) {
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+/* Hover effect for table rows */
+.table tbody tr:hover td:nth-child(2) {
+  color: #1a252f;
+}
+
+.table tbody tr:hover td:nth-child(3) {
+  color: #c0392b;
+}
+
+.table tbody tr:hover td:nth-child(4) {
+  color: #2980b9;
+}
+
+.table tbody tr:hover td:nth-child(5) {
+  color: #229954;
+}
+.checkout-title {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 2.5rem;                   /* Bigger title */
+  font-weight: 700;                    /* Bold */
+  color: #006241;                      /* Starbucks dark green */
+  text-align: center;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+}
+
+.checkout-subtitle {
+font-family: Verdana, Geneva, Tahoma, sans-serif;  font-size: 1.1rem;
+  font-weight: 500;
+  color: #00754a;                      /* Lighter Starbucks green */
+  text-align: center;
+  letter-spacing: 1px;
+  margin-top: 5px;
+}
+.b1{
+    background-color: #198754; /* Green */
+
+}
+/* Order.css માં ઉમેરો */
+.badge-fixed {
+  display: inline-flex;       /* Center text */
+  align-items: center;
+  justify-content: center;
+  width: 100px;              /* Fix width */
+  height: 30px;              /* Fix height */
+  font-size: 14px;           /* Text size */
+}

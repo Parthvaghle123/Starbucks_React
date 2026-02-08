@@ -1,0 +1,36 @@
+.admin-dashboard .metrics {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.admin-dashboard .metrics p {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 24px 32px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #222e3c;
+}
+.admin-users .table, .admin-orders .table {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-top: 24px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.admin-users th, .admin-orders th {
+  background: #222e3c;
+  color: #fff;
+  padding: 12px 16px;
+  text-align: left;
+}
+.admin-users td, .admin-orders td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.admin-users tr:last-child td, .admin-orders tr:last-child td {
+  border-bottom: none;
+}

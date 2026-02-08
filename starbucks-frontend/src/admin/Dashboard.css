@@ -1,0 +1,140 @@
+.dashboard-root { box-sizing: border-box; }
+
+.dashboard-root h1,
+.dashboard-root h2,
+.dashboard-root h3,
+.dashboard-root p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.dashboard-root .dashboard-hr {
+  border: 0;
+  height: 1px;
+  background: #eee;
+}
+
+/* Header */
+.dashboard-root .page-header {
+  padding: 0 0 6px 0;
+}
+.dashboard-root .page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.dashboard-root .page-subtitle {
+  color: #6b7280;
+  font-size: 17px;
+  margin-top: 10px !important; /* small gap only */
+  font-weight: bold;
+}
+
+/* Stats grid */
+.dashboard-root .stats-grid {
+  display: grid; 
+  margin-bottom: 15px !important; 
+  margin: 0 !important;
+}
+
+/* Dashboard uses 3 stat cards — avoid empty 4th column gap */
+.dashboard-root .products-stats-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Stat card */
+.dashboard-root .stat-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-bottom: 30px !important;
+}
+.dashboard-root .stat-header { display:flex; justify-content:space-between; align-items:center; }
+.dashboard-root .stat-title { font-size: 18px; font-weight:bold; color:#374151; }
+.dashboard-root .stat-value { margin-top:8px; font-size:23px; font-weight:700; }
+
+/* Card (Recent Orders) — remove any top gap strongly */
+.dashboard-root .card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+  margin: 0;                 /* remove margin completely */
+  margin-top: 0 !important;  /* force removal if anything else adds margin */
+  padding: 0;                /* keep header & container to control spacing */
+  overflow: visible;
+}
+
+.dashboard-root .card-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eef2f7;
+  background: #fbfdff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin: 0 !important;
+}
+.dashboard-root .card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 !important;
+  line-height: 1;
+}
+
+.dashboard-root .order-table-container {
+  padding: 0 12px 16px 12px; 
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+.dashboard-root .order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 !important;
+}
+.dashboard-root .order-table th,
+.dashboard-root .order-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #edf2f7;
+  text-align: center;
+  vertical-align: middle !important;
+  color: black !important;
+  font-weight: 500;
+}
+.dashboard-root .order-table thead th {
+  background: #f8fafc ;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  color: black !important;
+  vertical-align: middle !important;
+}
+
+.dashboard-root .status-badge { padding: 6px 10px; border-radius: 999px; font-weight:600; font-size:0.85rem; color: #fff; display:inline-block; }
+.dashboard-root .status-completed { background: #10b981; }
+.dashboard-root .status-pending { background: #f59e0b; }
+.dashboard-root .status-cancelled { background: #ef4444; }
+
+.dashboard-root .loading { display:flex; align-items:center; justify-content:center; padding: 36px; }
+
+
+@media(max-width:900px){
+  .stats-grid{
+        grid-template-columns: repeat(2, 1fr);
+
+  }
+
+  .dashboard-root .products-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media(min-width:769px){
+  .stats-grid{
+        grid-template-columns: repeat(2, 1fr);
+
+  }
+}
+
+@media(max-width:576px){
+  .dashboard-root .products-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

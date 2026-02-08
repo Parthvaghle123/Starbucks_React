@@ -1,0 +1,83 @@
+/* Admin Navbar Custom Styles */
+.admin-navbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  border-bottom: 1px solid #dee2e6;
+}
+
+.admin-navbar .navbar-brand {
+  font-family: 'Arial', sans-serif;
+  font-weight: 700;
+  transition: all 0.2s ease-in-out;
+}
+
+.admin-navbar .navbar-brand:hover {
+  transform: scale(1.02); 
+  color: #fff !important;
+}
+
+.admin-navbar .nav-link {
+  font-weight: bold;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease-in-out;
+  margin: 0 0.25rem;
+}
+
+.admin-navbar .nav-link:hover {
+  background-color: #218838; /* Green box */
+  color: #fff !important;   /* White text */
+  border-radius: 0.375rem;
+}
+
+.admin-navbar .nav-link.active {
+  background-color: #218838; /* Green background for active */
+  color: #fff !important;
+  font-weight: bold;
+  border-radius: 0.375rem;
+}
+
+.admin-navbar .dropdown-menu {
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.admin-navbar .dropdown-item {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.admin-navbar .dropdown-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(2px);
+}
+
+.admin-navbar .dropdown-item.text-danger:hover {
+  background-color: #fff5f5;
+  color: #dc3545 !important;
+}
+
+.admin-navbar .dropdown-toggle::after {
+  margin-left: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .admin-navbar .navbar-nav {
+    padding: 1rem 0;
+  }
+  
+  .admin-navbar .nav-link {
+    padding: 0.75rem 1rem !important;
+    margin: 0.25rem 0;
+  }
+}
+.nav-item dropdown{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+}
+.p{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

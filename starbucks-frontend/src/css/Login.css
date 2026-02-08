@@ -1,0 +1,378 @@
+.body {
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ✅ Fade-in animation for login container */
+.login-container {
+  background-color: white;
+  padding: 30px;
+  border-radius: 40px;
+  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
+  max-width: 380px;
+  width: 100%;
+  animation: fadeIn 1s ease-in-out;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ Button hover effect */
+.btn-success:hover {
+  background-color: #28a745;
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* ✅ Microphone bounce animation on hover */
+.btn-outline-secondary:hover {
+  animation: bounce 0.5s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.strength {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.head {
+  font-size: 25px;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  padding: 12px;
+  font-size: 16px;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* ✅ Click/focus પર green effect override (Bootstrap fix) */
+.form-control:focus {
+  border-color: green !important;
+  box-shadow: 0px 0px 6px rgba(0, 128, 0, 0.5) !important;
+  outline: none !important;
+}
+
+/* ✅ Hover પર green effect */
+.form-control:hover {
+  border-color: green !important;
+  box-shadow: 0px 0px 6px rgba(0, 128, 0, 0.5) !important;
+}
+.h2 {
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: 700 !important;
+}
+.l1 {
+  font-weight: 600;
+  color: #4e4b4bff !important;
+}
+/* ================= GOOGLE LOGIN BUTTON ================= */
+
+.login-with-google-btn {
+  width: 100%;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background-color: #ffffff;
+  color: #3c4043;
+
+  border: 1px solid #dadce0;
+  border-radius: 24px;
+
+  font-size: 15px;
+  font-weight: 500;
+  font-family: "Roboto", Arial, sans-serif;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Google "G" icon */
+.google-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* Hover effect */
+.login-with-google-btn:hover {
+  background-color: #f7f8f8;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px rgba(60, 64, 67, 0.15);
+}
+
+/* Active click */
+.login-with-google-btn:active {
+  background-color: #eeeeee;
+}
+
+
+/* Google button center */
+.google-login-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+
+
+/* Google button Starbucks clean style */
+.login-with-google-btn {
+  width: 80%;
+  /* padding: 10px 15px; */
+  border-radius: 30px;
+  border: 1px solid #dcdcdc;
+  background-color: #fff;
+  color: #333;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.login-with-google-btn:hover {
+  background-color: #f5f5f5;
+  border-color: #006241;
+  color: #006241;
+}
+
+/* ================= MOBILE RESPONSIVE STYLES ================= */
+
+@media (max-width: 768px) {
+  .login-container {
+    padding: 20px;
+    margin: 10px;
+    border-radius: 20px;
+    max-width: 95%;
+  }
+  
+  .otp-inputs-container {
+    gap: 8px !important;
+  }
+  
+  .otp-digit-input {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 16px !important;
+  }
+  
+  .progress-badges {
+    gap: 5px;
+  }
+  
+  .progress-badges .badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 15px;
+    margin: 5px;
+  }
+  
+  .otp-digit-input {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 14px !important;
+  }
+  
+  .h2 {
+    font-size: 1.3rem !important;
+  }
+  
+  .progress-badges .badge {
+    font-size: 0.6rem;
+    padding: 3px 6px;
+  }
+}
+
+/* OTP Input Styles */
+.otp-inputs-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.otp-digit-input {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.otp-digit-input:focus {
+  border-color: #00704A !important;
+  box-shadow: 0 0 5px rgba(0, 112, 74, 0.3) !important;
+  outline: none;
+}
+
+.progress-badges {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Change Password Progress Indicator Styles */
+.change-password-title {
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #006241;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.progress-indicator {
+  margin-bottom: 2rem;
+}
+
+.progress-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  padding: 0 20px;
+  margin: 20px 0;
+}
+
+.progress-line::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background-color: #e0e0e0;
+  z-index: 0;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.step-circle.active {
+  background-color: #006241;
+  border: 2px solid #006241;
+}
+
+.step-circle.inactive {
+  background-color: #f5f5f5;
+  border: 2px solid #e0e0e0;
+}
+
+.step-number {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.step-circle.active .step-number {
+  color: #ffffff;
+}
+
+.step-circle.inactive .step-number {
+  color: #666666;
+}
+
+.step-label {
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.step-label.active {
+  color: #006241;
+}
+
+.step-label.inactive {
+  color: #666666;
+}
+
+/* Mobile Responsive for Progress Indicator */
+@media (max-width: 768px) {
+  .change-password-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .progress-line {
+    padding: 0 10px;
+  }
+  
+  .step-circle {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .step-number {
+    font-size: 16px;
+  }
+  
+  .step-label {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .change-password-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .step-circle {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .step-number {
+    font-size: 14px;
+  }
+  
+  .step-label {
+    font-size: 11px;
+  }
+}
