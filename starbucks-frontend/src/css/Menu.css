@@ -18,7 +18,7 @@
   background: rgba(237, 233, 233, 0.811);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  height: 290px;
+  height: 310px;
 }
 
 .box2:hover {
@@ -72,6 +72,61 @@ h2 {
   font-size: 17px;
   color: black;
   font-weight: bold;
+}
+/* Product rating in card – same design as Home/Item */
+.product-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.product-rating-stars {
+  display: inline-flex;
+  gap: 1px;
+}
+.product-rating-stars .star {
+  color: #ddd;
+  font-size: 14px;
+  line-height: 1;
+}
+.product-rating-stars .star.filled {
+  color: #f5a623;
+}
+.product-rating-stars .star.half {
+  position: relative;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+}
+.product-rating-stars .star.half .half-star-filled {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #f5a623;
+  font-size: 14px;
+  line-height: 1;
+  overflow: hidden;
+  width: 50%;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.product-rating-stars .star.half .half-star-empty {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #ddd;
+  font-size: 14px;
+  line-height: 1;
+}
+.product-rating-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+.product-rating-count {
+  font-weight: 400;
+  color: #888;
+  font-size: 12px;
 }
 h3 {
   font-size: 17px;

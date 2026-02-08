@@ -4,58 +4,57 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/Home.css";
 import axios from "axios";
 
-// 🔹 Static Product List
-const products1 = [
-  {
-    id: 0,
-    image: "https://starbucksstatic.cognizantorderserv.com/Items/Small/100501.jpg",
-    title: "Java Chip Frappuccino",
-    per: "Mocha sauce and Frappuccino® chips blended with with Frappu..",
-    price: 441,
-  },
-  {
-    id: 1,
-    image: "https://starbucksstatic.cognizantorderserv.com/Items/Small/112539.jpg",
-    title: "Picco Cappuccino",
-    per: "Dark, Rich in flavour espresso lies in wait under a smoothed..",
-    price: 200,
-  },
-  {
-    id: 2,
-    image: "https://starbucksstatic.cognizantorderserv.com/Items/Small/100385.jpg",
-    title: "Iced Caffe Latte",
-    per: "Our dark, Rich in flavour espresso is combined with milk and..",
-    price: 372,
-  },
-];
-
 const Item = () => {
-  const [filteredProducts, setFilteredProducts] = useState(products1);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const token = localStorage.getItem("token");
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
+  // 🔹 Fetch products marked "Show on Item (Home)" by admin
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("http://localhost:4500/api/products?displayOnItem=true");
+        const sortedProducts = (response.data || []).sort((a, b) => {
+          const dateA = new Date(a.createdAt || a._id);
+          const dateB = new Date(b.createdAt || b._id);
+          return dateB - dateA;
+        });
+        setProducts(sortedProducts);
+        setFilteredProducts(sortedProducts);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products");
+        setProducts([]);
+        setFilteredProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   // 🔹 Search Filter
   useEffect(() => {
     const query =
       new URLSearchParams(location.search).get("q")?.toLowerCase() || "";
     if (query) {
-      setLoading(true);
-      setTimeout(() => {
-        const filtered = products1.filter((item) =>
-          item.title.toLowerCase().includes(query)
-        );
-        setFilteredProducts(filtered);
-        setLoading(false);
-      }, 800);
+      const filtered = products.filter((item) =>
+        (item.name || "").toLowerCase().includes(query)
+      );
+      setFilteredProducts(filtered);
     } else {
-      setFilteredProducts(products1);
+      setFilteredProducts(products);
     }
-  }, [location.search]);
+  }, [location.search, products]);
 
   // 🔹 Add To Cart Function
   const addToCart = async (product) => {
@@ -69,9 +68,9 @@ const Item = () => {
       await axios.post(
         "http://localhost:4500/add-to-cart",
         {
-          productId: product.id.toString(),
+          productId: product._id.toString(),
           image: product.image,
-          title: product.title,
+          title: product.name,
           price: product.price,
         },
         {
@@ -81,50 +80,74 @@ const Item = () => {
         }
       );
 
-      setToastMessage(`${product.title} added to cart!`);
+      setToastMessage(`${product.name} added to cart!`);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
     } catch (error) {
       console.error(error);
-      alert("Already added item");
+      alert(error.response?.data?.message || "Already added item");
     }
   };
 
   return (
     <>
-      {/* 🔹 Toast Popup */}
       {showToast && <div className="toast-popup bg-success">🛒 {toastMessage}</div>}
 
       <div className="Herosection_1">
         <div className="container">
-          {/* Loader */}
-          {loading ? (
+          {loading && products.length === 0 ? (
             <div className="d-flex justify-content-center align-items-center my-5">
               <div className="spinner-border text-success mb-4" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
             </div>
+          ) : error ? (
+            <div className="empty-state-box">{error}</div>
           ) : filteredProducts.length === 0 ? (
-            <div
-              className="alert alert-danger text-center mt-3 fw-bold mb-4 m-auto"
-              style={{
-                width: "18%",
-                backgroundColor: "#e7414c",
-              }}
-            >
-               Product not found
-            </div>
+            <div className="empty-state-box">Product not found</div>
           ) : (
             <div className="container" id="products1">
               {filteredProducts.map((item) => (
-                <div key={item.id} className="box">
+                <div key={item._id} className="box">
                   <div className="img-box1">
-                    <img className="images1" src={item.image} alt={item.title} />
+                    <img className="images1" src={item.image} alt={item.name} />
                   </div>
 
                   <div className="bottom">
-                    <h2>{item.title}</h2>
-                    <h4>{item.per}</h4>
+                    <h2>{item.name}</h2>
+                    {item.rating != null && (
+                      <div className="product-rating">
+                        <span className="product-rating-stars">
+                          {(() => {
+                            const rating = Number(item.rating);
+                            const fullStars = Math.floor(rating);
+                            const hasHalfStar = (rating % 1) >= 0.5;
+                            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+                            return (
+                              <>
+                                {[...Array(fullStars)].map((_, i) => (
+                                  <span key={`full-${i}`} className="star filled" aria-hidden>★</span>
+                                ))}
+                                {hasHalfStar && (
+                                  <span key="half" className="star half" aria-hidden>
+                                    <span className="half-star-filled">★</span>
+                                    <span className="half-star-empty">☆</span>
+                                  </span>
+                                )}
+                                {[...Array(emptyStars)].map((_, i) => (
+                                  <span key={`empty-${i}`} className="star" aria-hidden>☆</span>
+                                ))}
+                              </>
+                            );
+                          })()}
+                        </span>
+                        <span className="product-rating-value">
+                          {Number(item.rating).toFixed(1)}
+                        </span>
+                      </div>
+                    )}
+                    <h4>{item.description}</h4>
                     <h3>₹{item.price}.00</h3>
 
                     <button className="btn4" onClick={() => addToCart(item)}>

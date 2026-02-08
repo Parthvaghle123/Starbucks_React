@@ -290,6 +290,38 @@ const Item = () => {
                     </div>
                     <div className="bottom">
                       <h2>{item.name}</h2>
+                      {item.rating != null && (
+                        <div className="product-rating">
+                          <span className="product-rating-stars">
+                            {(() => {
+                              const rating = Number(item.rating);
+                              const fullStars = Math.floor(rating);
+                              const hasHalfStar = (rating % 1) >= 0.5;
+                              const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                              
+                              return (
+                                <>
+                                  {[...Array(fullStars)].map((_, i) => (
+                                    <span key={`full-${i}`} className="star filled" aria-hidden>★</span>
+                                  ))}
+                                  {hasHalfStar && (
+                                    <span key="half" className="star half" aria-hidden>
+                                      <span className="half-star-filled">★</span>
+                                      <span className="half-star-empty">☆</span>
+                                    </span>
+                                  )}
+                                  {[...Array(emptyStars)].map((_, i) => (
+                                    <span key={`empty-${i}`} className="star" aria-hidden>☆</span>
+                                  ))}
+                                </>
+                              );
+                            })()}
+                          </span>
+                          <span className="product-rating-value">
+                            {Number(item.rating).toFixed(1)}
+                          </span>
+                        </div>
+                      )}
                       <h4>{item.description}</h4>
                       <h3>₹{item.price}.00</h3>
                       <button

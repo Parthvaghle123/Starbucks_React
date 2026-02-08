@@ -997,13 +997,14 @@ app.delete('/api/admin/users/:id', authenticateAdmin, async (req, res) => {
 // Get all products (public)
 app.get('/api/products', async (req, res) => {
   try {
-    const { category, featured, displayOnGift, displayOnMenu } = req.query;
+    const { category, featured, displayOnGift, displayOnMenu, displayOnItem } = req.query;
     let filter = { isAvailable: true };
     
     if (category && category !== 'All') filter.category = category;
     if (featured === 'true') filter.featured = true;
     if (displayOnGift === 'true') filter.displayOnGift = true;
     if (displayOnMenu === 'true') filter.displayOnMenu = true;
+    if (displayOnItem === 'true') filter.displayOnItem = true;
     
     const products = await Product.find(filter).sort({ createdAt: -1 });
     res.json(products);
@@ -1092,7 +1093,7 @@ app.patch('/admin/products/:id/toggle-availability', authenticateAdmin, async (r
 // Admin: Toggle product display options
 app.patch('/admin/products/:id/toggle-display', authenticateAdmin, async (req, res) => {
   try {
-    const { displayType } = req.body; // 'gift' or 'menu'
+    const { displayType } = req.body; // 'gift', 'menu', or 'item'
     const product = await Product.findById(req.params.id);
     
     if (!product) {
@@ -1103,14 +1104,18 @@ app.patch('/admin/products/:id/toggle-display', authenticateAdmin, async (req, r
       product.displayOnGift = !product.displayOnGift;
     } else if (displayType === 'menu') {
       product.displayOnMenu = !product.displayOnMenu;
+    } else if (displayType === 'item') {
+      product.displayOnItem = !product.displayOnItem;
     }
     
     await product.save();
     
+    const fieldMap = { gift: 'displayOnGift', menu: 'displayOnMenu', item: 'displayOnItem' };
+    const field = fieldMap[displayType];
     res.json({ 
       success: true, 
       product, 
-      message: `Product display on ${displayType} ${product[displayType === 'gift' ? 'displayOnGift' : 'displayOnMenu'] ? 'enabled' : 'disabled'}` 
+      message: `Product display on ${displayType} ${product[field] ? 'enabled' : 'disabled'}` 
     });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to toggle product display', error: err.message });

@@ -12,9 +12,10 @@ import {
   Star,
   Gift,
   Menu,
+  Home,
   CheckCircle,
   XCircle,
-  AlertCircle,  
+  AlertCircle,
   Activity
 } from "lucide-react";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -31,6 +32,8 @@ const Products = () => {
     featured: false,
     displayOnGift: false,
     displayOnMenu: false,
+    displayOnItem: false,
+    rating: "",
   });
   // Image preview and error state for Add/Edit modals
   const [imagePreview, setImagePreview] = useState("");
@@ -122,7 +125,15 @@ const Products = () => {
       featured: false,
       displayOnGift: false,
       displayOnMenu: false,
+      displayOnItem: false,
+      rating: "",
     });
+  };
+
+  const buildProductPayload = () => {
+    const payload = { ...formData };
+    payload.rating = formData.rating === "" || formData.rating == null ? undefined : Number(formData.rating);
+    return payload;
   };
 
   const handleAddProduct = async (e) => {
@@ -131,7 +142,7 @@ const Products = () => {
       const token = localStorage.getItem("adminToken");
       const response = await axios.post(
         "http://localhost:4500/admin/products",
-        formData,
+        buildProductPayload(),
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -153,7 +164,7 @@ const Products = () => {
       const token = localStorage.getItem("adminToken");
       const response = await axios.put(
         `http://localhost:4500/admin/products/${selectedProduct._id}`,
-        formData,
+        buildProductPayload(),
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -263,6 +274,8 @@ const Products = () => {
       featured: !!product.featured,
       displayOnGift: !!product.displayOnGift,
       displayOnMenu: !!product.displayOnMenu,
+      displayOnItem: !!product.displayOnItem,
+      rating: product.rating != null ? product.rating.toString() : "",
     });
 
     setShowEditModal(true);
@@ -273,6 +286,7 @@ const Products = () => {
   const activeProducts = products.filter((product) => product.isAvailable).length;
   const giftPageProducts = products.filter((product) => product.displayOnGift).length;
   const menuPageProducts = products.filter((product) => product.displayOnMenu).length;
+  const itemPageProducts = products.filter((product) => product.displayOnItem).length;
 
   if (loading) {
     return (
@@ -348,6 +362,17 @@ const Products = () => {
             <div className="products-stat-value">{menuPageProducts}</div>
             <span className="products-stat-subtext">
               Showing on the Menu page
+            </span>
+          </div>
+
+          <div className="products-stat-card item-products">
+            <div className="products-stat-header">
+              <span className="products-stat-label">Item (Home) Page Products</span>
+              <Home size={20} className="products-stat-icon" />
+            </div>
+            <div className="products-stat-value">{itemPageProducts}</div>
+            <span className="products-stat-subtext">
+              Showing on the Home / Item page
             </span>
           </div>
         </div>
@@ -520,6 +545,23 @@ const Products = () => {
                         >
                           <Menu size={14} />
                         </button>
+                        <button
+                          className={`btn btn-sm ${
+                            product.displayOnItem
+                              ? "btn-success"
+                              : "btn-outline-success"
+                          }`}
+                          onClick={() =>
+                            handleToggleDisplay(product._id, "item")
+                          }
+                          title={
+                            product.displayOnItem
+                              ? "Remove from Item (Home) page"
+                              : "Add to Item (Home) page"
+                          }
+                        >
+                          <Home size={14} />
+                        </button>
                       </div>
                     </td>
                     <td>
@@ -656,6 +698,22 @@ const Products = () => {
                         />
                       </div>
                     </div>
+                    <div className="row">
+                      <div className="col-md-6 mb-3">
+                        <label className="form-label">Rating (0–5)</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          name="rating"
+                          value={formData.rating}
+                          onChange={handleInputChange}
+                          min="0"
+                          max="5"
+                          step="0.1"
+                          placeholder="e.g. 4.5"
+                        />
+                      </div>
+                    </div>
                     {/* Image Preview Section */}
                     {formData.image && (
                       <div className="mb-3">
@@ -730,6 +788,20 @@ const Products = () => {
                           />
                           <label className="form-check-label">
                             Show on Menu Page
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-md-12 mb-3">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="displayOnItem"
+                            checked={formData.displayOnItem}
+                            onChange={handleInputChange}
+                          />
+                          <label className="form-check-label">
+                            Show on Home Page
                           </label>
                         </div>
                       </div>
@@ -849,6 +921,22 @@ const Products = () => {
                         />
                       </div>
                     </div>
+                    <div className="row">
+                      <div className="col-md-6 mb-3">
+                        <label className="form-label">Rating (0–5)</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          name="rating"
+                          value={formData.rating}
+                          onChange={handleInputChange}
+                          min="0"
+                          max="5"
+                          step="0.1"
+                          placeholder="e.g. 4.5"
+                        />
+                      </div>
+                    </div>
                     <label className="form-label">Image Preview</label>
                     <div
                       style={{
@@ -918,6 +1006,20 @@ const Products = () => {
                           />
                           <label className="form-check-label">
                             Show on Menu Page
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-md-12 mb-3">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="displayOnItem"
+                            checked={formData.displayOnItem}
+                            onChange={handleInputChange}
+                          />
+                          <label className="form-check-label">
+                            Show on Home Page
                           </label>
                         </div>
                       </div>

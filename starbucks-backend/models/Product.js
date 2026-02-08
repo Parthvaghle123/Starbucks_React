@@ -52,6 +52,16 @@ const productSchema = new mongoose.Schema({
   displayOnMenu: {
     type: Boolean,
     default: false
+  },
+  displayOnItem: {
+    type: Boolean,
+    default: false
+  },
+  rating: {
+    type: Number,
+    default: null,
+    min: 0,
+    max: 5
   }
 }, {
   timestamps: true
