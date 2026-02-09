@@ -1,10 +1,24 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { QRCodeSVG } from "qrcode.react";
 import "./css/Cart.css";
 
-const PAYMENT_TIMEOUT_SECONDS = 60; // 1 minute
+const API_BASE = "http://localhost:4500";
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 const Check = () => {
   const navigate = useNavigate();
@@ -21,16 +35,7 @@ const Check = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
-  // QR payment popup state
-  const [showQRModal, setShowQRModal] = useState(false);
-  const [qrModalPhase, setQrModalPhase] = useState("waiting"); // "waiting" | "success" | "timeout" | "submit_error"
-  const [timeLeft, setTimeLeft] = useState(PAYMENT_TIMEOUT_SECONDS);
-  const [submittingOrder, setSubmittingOrder] = useState(false);
-  const timeoutRef = useRef(null);
-  const timerRef = useRef(null);
-
-  const UPI_ID = "vaghelaparth2005-2@oksbi";
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -38,7 +43,7 @@ const Check = () => {
       if (!token) return;
 
       try {
-        const res = await axios.get("http://localhost:4500/user/profile1", {
+        const res = await axios.get(`${API_BASE}/user/profile1`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setFormData((prev) => ({
@@ -56,12 +61,12 @@ const Check = () => {
       if (!token) return;
 
       try {
-        const res = await axios.get("http://localhost:4500/cart", {
+        const res = await axios.get(`${API_BASE}/cart`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const cart = res.data.cart || [];
         setCartItems(cart);
-        const total = cart.reduce((sum, item) => sum + item.total, 0);
+        const total = cart.reduce((sum, item) => sum + (item.total || item.price * (item.quantity || 1)), 0);
         setTotalAmount(total);
       } catch (err) {
         console.error("Error fetching cart:", err);
@@ -72,89 +77,98 @@ const Check = () => {
     fetchCart();
   }, []);
 
-  // Countdown timer when QR modal is open and in "waiting" phase
-  useEffect(() => {
-    if (!showQRModal || qrModalPhase !== "waiting") return;
-
-    setTimeLeft(PAYMENT_TIMEOUT_SECONDS);
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          if (timerRef.current) clearInterval(timerRef.current);
-          setQrModalPhase("timeout");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [showQRModal, qrModalPhase]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const generateTransactionId = () => {
-    const timestamp = Date.now();
-    const random = Math.floor(Math.random() * 10000);
-    return `TXN${timestamp}${random}`;
-  };
+  const placeOrderWithRazorpay = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setErrorMsg("Please log in to continue.");
+      return;
+    }
 
-  const closeQRModal = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setShowQRModal(false);
-    setQrModalPhase("waiting");
-    setTimeLeft(PAYMENT_TIMEOUT_SECONDS);
-  };
-
-  const openQRModal = () => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setErrorMsg("");
-    setQrModalPhase("waiting");
-    setTimeLeft(PAYMENT_TIMEOUT_SECONDS);
-    setShowQRModal(true);
-  };
-
-  const handleRetryPayment = () => {
-    setQrModalPhase("waiting");
-    setTimeLeft(PAYMENT_TIMEOUT_SECONDS);
-  };
-
-  const submitOrderAfterPayment = async () => {
-    setSubmittingOrder(true);
-    const txId = generateTransactionId();
+    setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
-      const payload = {
-        ...formData,
-        paymentMethod: "Online Payment",
-        paymentType: "QRCode",
-        transactionId: txId,
-        paymentStatus: "Paid",
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        setErrorMsg("Payment gateway could not be loaded. Please try again.");
+        setLoading(false);
+        submittingRef.current = false;
+        return;
+      }
+
+      const { data: orderData } = await axios.post(
+        `${API_BASE}/api/create-razorpay-order`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const { orderId, amount, currency, key } = orderData;
+      if (!key || !orderId) {
+        setErrorMsg(orderData.message || "Could not create payment order.");
+        setLoading(false);
+        submittingRef.current = false;
+        return;
+      }
+
+      const options = {
+        key,
+        amount: String(amount),
+        currency: currency || "INR",
+        name: "Starbucks",
+        description: "Order payment",
+        order_id: orderId,
+        prefill: {
+          name: formData.email?.split("@")[0] || "Customer",
+          email: formData.email,
+          contact: (formData.countryCode || "") + (formData.phone || ""),
+        },
+        theme: { color: "#00704a" },
+        handler: async (response) => {
+          try {
+            await axios.post(
+              `${API_BASE}/order`,
+              {
+                ...formData,
+                paymentMethod: "Online Payment",
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              },
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            navigate("/order-success");
+          } catch (err) {
+            console.error("Order failed after payment", err);
+            setErrorMsg(err.response?.data?.message || "Order could not be placed. Please contact support with your payment ID.");
+          } finally {
+            setLoading(false);
+            submittingRef.current = false;
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+            submittingRef.current = false;
+            alert("Payment cancelled. Please make payment to complete your order.");
+            navigate("/cart", { state: { paymentCancelled: true, message: "Please make payment to complete your order." } });
+          },
+        },
       };
 
-      await axios.post("http://localhost:4500/order", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setQrModalPhase("success");
-      setErrorMsg("");
-
-      // Brief success message in modal then redirect
-      timeoutRef.current = setTimeout(() => {
-        closeQRModal();
-        navigate("/order-success");
-      }, 1500);
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err) {
-      console.error("Order failed", err);
-      setQrModalPhase("submit_error");
-    } finally {
-      setSubmittingOrder(false);
+      console.error("Razorpay error", err);
+      setErrorMsg(err.response?.data?.message || "Payment could not be started. Please try again.");
+      setLoading(false);
+      submittingRef.current = false;
     }
   };
 
@@ -163,7 +177,7 @@ const Check = () => {
     setErrorMsg("");
 
     if (formData.paymentMethod === "Online Payment") {
-      openQRModal();
+      await placeOrderWithRazorpay();
       return;
     }
 
@@ -171,24 +185,16 @@ const Check = () => {
     const token = localStorage.getItem("token");
     try {
       const payload = { ...formData, paymentStatus: "Pending" };
-      await axios.post("http://localhost:4500/order", payload, {
+      await axios.post(`${API_BASE}/order`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
       navigate("/order-success");
     } catch (err) {
       console.error("Order failed", err);
-      setErrorMsg("❌ Order failed. Please try again.");
+      setErrorMsg(err.response?.data?.message || "Order failed. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const upiPaymentString = `upi://pay?pa=${UPI_ID}&am=${totalAmount}&cu=INR&tn=Starbucks Order`;
-
-  const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -197,10 +203,10 @@ const Check = () => {
         <div className="col-lg-7 col-md-9">
           <div className="card shadow-lg border-0 p-4 rounded-4">
             <h1 className="fs-3 text-success text-center fw-bold checkout-title">
-            Payment
+              Payment
             </h1>
             <p className="text-success fw-bold text-center checkout-subtitle">
-            Brew & Pay • Easy Checkout
+              Brew & Pay • Easy Checkout
             </p>
             <hr />
             {errorMsg && (
@@ -254,7 +260,7 @@ const Check = () => {
                   value={formData.address}
                   onChange={handleChange}
                   required
-                ></textarea>
+                />
               </div>
 
               <div className="mb-3">
@@ -288,7 +294,7 @@ const Check = () => {
                         id="online"
                       />
                       <label className="form-check-label" htmlFor="online">
-                        Online Payment (QR)
+                        Razorpay (Card / UPI / Net Banking)
                       </label>
                     </div>
                   </div>
@@ -307,118 +313,14 @@ const Check = () => {
                   disabled={loading}
                 >
                   {formData.paymentMethod === "Online Payment"
-                    ? "Proceed to payment"
-                    : "Submit order"}
+                    ? "Pay ₹" + totalAmount.toFixed(0) + " with Razorpay"
+                    : "Place order"}
                 </button>
               </div>
             </form>
           </div>
         </div>
       </div>
-
-      {/* QR Payment Modal */}
-      {showQRModal && (
-        <div
-          className="modal show d-block"
-          tabIndex="-1"
-          style={{ background: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  {qrModalPhase === "waiting" && "Complete payment"}
-                  {qrModalPhase === "success" && "Payment successful"}
-                  {qrModalPhase === "timeout" && "Payment timed out"}
-                  {qrModalPhase === "submit_error" && "Something went wrong"}
-                </h5>
-                {(qrModalPhase === "timeout" || qrModalPhase === "submit_error") && (
-                  <button
-                    type="button"
-                    className="btn-close"
-                    onClick={closeQRModal}
-                    aria-label="Close"
-                  />
-                )}
-              </div>
-              <div className="modal-body text-center">
-                {qrModalPhase === "waiting" && (
-                  <>
-                    <p className="mb-2">Scan QR code to pay <strong>₹{totalAmount}</strong></p>
-                    <div className="d-flex justify-content-center mb-3">
-                      <QRCodeSVG value={upiPaymentString} size={200} />
-                    </div>
-                    <p className="text-muted small mb-2">
-                      Time remaining: <strong className={timeLeft <= 30 ? "text-danger" : ""}>{formatTime(timeLeft)}</strong>
-                    </p>
-                    <button
-                      type="button"
-                      className="btn btn-success btn-lg fw-bold"
-                      onClick={submitOrderAfterPayment}
-                      disabled={submittingOrder}
-                    >
-                      {submittingOrder ? "Submitting order…" : "I've completed payment"}
-                    </button>
-                  </>
-                )}
-                {qrModalPhase === "success" && (
-                  <>
-                    <div className="text-success display-6 mb-2 ">✅</div>
-                    <p className="mb-0 fw-bold">Order placed successfully. Redirecting…</p>
-                  </>
-                )}
-                {qrModalPhase === "timeout" && (
-                  <>
-                    <p className="text-danger mb-3 fw-bold">
-                      Payment was not completed within 1 minute. You can try again.
-                    </p>
-                    <div className="d-flex gap-2 justify-content-center flex-wrap">
-                      <button
-                        type="button"
-                        className="btn btn-outline-primary fw-bold"
-                        onClick={closeQRModal}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-success fw-bold"
-                        onClick={handleRetryPayment}
-                      >
-                        Retry payment
-                      </button>
-                    </div>
-                  </>
-                )}
-                {qrModalPhase === "submit_error" && (
-                  <>
-                    <p className="text-danger mb-3">Order could not be placed. Please try again.</p>
-                    <div className="d-flex gap-2 justify-content-center flex-wrap">
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary fw-bold"
-                        onClick={closeQRModal}
-                      >
-                        Close
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-primary fw-bold"
-                        onClick={() => {
-                          setQrModalPhase("waiting");
-                          submitOrderAfterPayment();
-                        }}
-                      >
-                        Retry submit order
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

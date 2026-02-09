@@ -1,15 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./css/Cart.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Cart = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [paymentError, setPaymentError] = useState("");
 
   useEffect(() => {
     fetchCart();
   }, []);
+
+  useEffect(() => {
+    const state = location.state;
+    if (state?.paymentCancelled && state?.message) {
+      setPaymentError(state.message);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.pathname, location.state?.paymentCancelled, navigate]);
 
   const fetchCart = async () => {
     try {
@@ -57,6 +68,12 @@ const Cart = () => {
 
   return (
     <div className="container mt-5">
+      {paymentError && (
+        <div className="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-between" role="alert">
+          <span className="fw-semibold">⚠️ {paymentError}</span>
+          <button type="button" className="btn-close" onClick={() => setPaymentError("")} aria-label="Close" />
+        </div>
+      )}
       {cartItems.length === 0 ? (
         <div className="alert alert-warning text-center fw-bold fs-5">
           🛒 Your cart is empty.

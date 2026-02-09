@@ -2,12 +2,14 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const crypto = require("crypto");
 const session = require("express-session");
 const passport = require("passport");
 const OAuth2Strategy = require("passport-google-oauth2").Strategy;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const Razorpay = require("razorpay");
 
 // Models
 const User = require("./models/User");
@@ -22,6 +24,12 @@ const Wishlist = require("./models/Wishlist");
 const app = express();
 const PORT = process.env.PORT || 4500;
 const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key";
+
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || "";
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || "";
+const razorpayInstance = RAZORPAY_KEY_ID && RAZORPAY_KEY_SECRET
+  ? new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_KEY_SECRET })
+  : null;
 
 const clientid = "31050376942-66etnpqo1erq3r8tk7d3kgf79m9n2r88.apps.googleusercontent.com"
 const clientsecret = "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"
@@ -656,15 +664,78 @@ app.delete("/remove-from-cart/:productId", authenticateToken, async (req, res) =
   }
 });
 
+// Create Razorpay order (amount in paise for INR)
+app.post("/api/create-razorpay-order", authenticateToken, async (req, res) => {
+  if (!razorpayInstance) {
+    return res.status(503).json({ message: "Razorpay is not configured. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to .env" });
+  }
+  const userId = req.user.id;
+  try {
+    const cart = await Cart.findOne({ userId });
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({ message: "Cart is empty" });
+    }
+    const totalAmount = cart.items.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+    const amountInPaise = Math.round(totalAmount * 100);
+    if (amountInPaise < 100) {
+      return res.status(400).json({ message: "Minimum order amount is ₹1" });
+    }
+    const receipt = `rcpt_${Date.now()}_${userId.toString().slice(-6)}`;
+    const order = await razorpayInstance.orders.create({
+      amount: amountInPaise,
+      currency: "INR",
+      receipt: receipt.slice(0, 40),
+    });
+    res.status(200).json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      key: RAZORPAY_KEY_ID,
+    });
+  } catch (err) {
+    console.error("Razorpay order create error:", err);
+    res.status(500).json({ message: "Failed to create payment order", error: err.message });
+  }
+});
+
+function verifyRazorpaySignature(orderId, paymentId, signature) {
+  if (!RAZORPAY_KEY_SECRET) return false;
+  const body = orderId + "|" + paymentId;
+  const expected = crypto.createHmac("sha256", RAZORPAY_KEY_SECRET).update(body).digest("hex");
+  return expected === signature;
+}
+
 // Place Order API
 app.post("/order", authenticateToken, async (req, res) => {
   const userId = req.user.id;
-  const { email, phone, address, paymentMethod, cardNumber, expiry, transactionId, paymentStatus } = req.body;
+  const {
+    email, phone, address, paymentMethod, cardNumber, expiry,
+    transactionId, paymentStatus,
+    razorpay_order_id, razorpay_payment_id, razorpay_signature,
+  } = req.body;
 
   try {
     const cart = await Cart.findOne({ userId });
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
+    }
+
+    let finalTransactionId = transactionId || null;
+    let finalPaymentStatus = paymentStatus;
+
+    if (paymentMethod === "Online Payment") {
+      if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
+        const isValid = verifyRazorpaySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature);
+        if (!isValid) {
+          return res.status(400).json({ message: "Payment verification failed. Invalid signature." });
+        }
+        finalTransactionId = razorpay_payment_id;
+        finalPaymentStatus = "Paid";
+      } else if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+        return res.status(400).json({ message: "Razorpay payment details (order_id, payment_id, signature) are required for online payment." });
+      }
+    } else {
+      finalPaymentStatus = finalPaymentStatus || "Pending";
     }
 
     let user = await User1.findById(userId);
@@ -676,7 +747,7 @@ app.post("/order", authenticateToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const newOrderId = await generateOrderId(); // Call unique ID function
+    const newOrderId = await generateOrderId();
 
     const order = new Order({
       orderId: newOrderId,
@@ -685,8 +756,8 @@ app.post("/order", authenticateToken, async (req, res) => {
       phone,
       address,
       paymentMethod,
-      paymentStatus: paymentStatus || (paymentMethod === "Cash On Delivery" ? "Pending" : "Paid"),
-      transactionId: transactionId || null,
+      paymentStatus: finalPaymentStatus,
+      transactionId: finalTransactionId,
       payment_details: {
         cardNumber: (paymentMethod === "Online Payment" && cardNumber) ? cardNumber : null,
         expiry: (paymentMethod === "Online Payment" && expiry) ? expiry : null,
